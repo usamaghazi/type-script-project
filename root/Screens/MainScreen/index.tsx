@@ -1,94 +1,42 @@
-import React, { useState } from 'react'
-import { Alert, FlatList, Modal } from 'react-native'
+import React from 'react'
+import {
+  FlatList,
+  Modal
+} from 'react-native'
 import Button from '../../../components/Button'
 import Card from '../../../components/Card'
 import CustomModal from '../../../components/CustomModal'
 import Input from '../../../components/Input'
+import useItemManager from '../../../hooks/useItemManager'
 import {
   CardContainer,
   RootContainer
 } from './Styles'
 
 const MainScreen: React.FC = () => {
-  const [items, setItems] = useState<string[]>(['Ladder','Chair'])
-  const [item, setItem] = useState<string>('')
-  const [modalvisible, setModalVisible] = useState<boolean>(false)
-  const [updateItem, setUpdateItem] = useState<string>('')
-  const [updateIndex, setUpdateIndex] = useState<number | null>(null)
 
-  const onPress = (): void => {
-      if(item.trim()===""){
-        alert('Please enter Item')
-      }
-      else{
-        setItems(preStat =>[...preStat,item])
-        setItem('')
-      }
-  }
-
-  const deletingItem =(i:number): void => {
-      const filterItems = items.filter((item,index)=>{
-        return index !== i
-      })
-      setItems(filterItems)
-  }
-
-  const handleDeleteItem = (i:number) => {
-    Alert.alert(
-      'Delete Item',
-      `Are you sure You Want to Delete ${items[i]}?`,
-      [
-        {
-          text: 'Cancel',
-          style:'cancel'
-        },
-        {
-          text: 'Delete',
-          style:'destructive',
-          onPress: () => deletingItem(i)
-        }
-      ]
-    )
-  }
-
-  const hideModal = (): void => {
-      setModalVisible(false)
-  }
-
-  const handleUpdateItem = (index: number|null): void => {
-     if(index === null){
-      alert('Item cannot Change')
-     }
-     else{
-          if(updateItem.trim() === ''){
-            alert('Please Enter Item')
-          }
-          else{
-            const newItems = [...items]
-          newItems[index] = updateItem
-          setItems(newItems)
-
-          setModalVisible(false)
-          setUpdateItem('')
-          setUpdateIndex(null)
-          }
-          
-     }
-  }
-
-  const handleEditItem = (item:string,i:number) => {
-    setModalVisible(true)
-    setUpdateItem(item)
-    setUpdateIndex(i)
-  }
+   const {
+    items,
+    item,
+    modalVisible,
+    updateItem,
+    updateIndex,
+    setItem,
+    setUpdateItem,
+    onPress,
+    handleDeleteItem,
+    handleEditItem,
+    handleUpdateItem,
+    hideModal,
+  } = useItemManager(['Ladder', 'Chair']);
 
   return (
     <>
     <Modal
-       visible={modalvisible}
+       visible={modalVisible}
        transparent={true}
        animationType='slide'
-       onRequestClose={()=>setModalVisible(false)}>
+       onRequestClose={()=>hideModal()}>
         <CustomModal
         item={updateItem}
         index={updateIndex}
